@@ -1,0 +1,34 @@
+# https://dev.azure.com/home-assistant
+
+trigger:
+  tags:
+    include:
+    - '*'
+pr: none
+variables:
+  - name: versionWheels
+    value: '1.13.0-3.8-alpine3.12'
+resources:
+  repositories:
+    - repository: azure
+      type: github
+      name: 'home-assistant/ci-azure'
+      endpoint: 'home-assistant'
+
+jobs:
+- template: templates/azp-job-wheels.yaml@azure
+  parameters:
+    builderVersion: '$(versionWheels)'
+    builderApk: 'build-base;gfortran;openblas-dev;lapack-dev;openblas-dev'
+    builderPip: 'Cython;numpy'
+    builderPath: 'scipy'
+    builderEnvFile: true
+    wheelsLocal: true
+    preBuild:
+    - script: |
+        version="$(head -n 1 requirements.txt)"
+        git clone --depth 1 --recurse-submodules -b "${version##*.}" https://github.com/scipy/scipy
+
+        patch -d scipy -p 0 < missing-int64_t.patch
+        rm -rf scipy/.git
+      displayName: 'Setup scipy'
