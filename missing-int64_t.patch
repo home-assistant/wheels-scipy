@@ -1,7 +1,7 @@
-diff --git a/optimize/rectangular_lsap/rectangular_lsap.cpp b/optimize/rectangular_lsap/rectangular_lsap.cpp
+diff --git a/scipy/optimize/rectangular_lsap/rectangular_lsap.cpp b/scipy/optimize/rectangular_lsap/rectangular_lsap.cpp
 index bce9d38..0bab381 100644
---- a/optimize/rectangular_lsap/rectangular_lsap.cpp
-+++ b/optimize/rectangular_lsap/rectangular_lsap.cpp
+--- a/scipy/optimize/rectangular_lsap/rectangular_lsap.cpp
++++ b/scipy/optimize/rectangular_lsap/rectangular_lsap.cpp
 @@ -44,6 +44,8 @@ Author: PM Larsen
  #include <cmath>
  #include <vector>
