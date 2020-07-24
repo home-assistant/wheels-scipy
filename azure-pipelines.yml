@@ -28,7 +28,7 @@ jobs:
         set -xe
 
         version="$(head -n 1 requirements.txt | cut -d '=' -f 3)"
-        git clone --depth 1 -b "${version}" https://github.com/scipy/scipy
+        git clone --depth 1 -b "v${version}" https://github.com/scipy/scipy
 
         patch -d scipy -p 0 < missing-int64_t.patch
         rm -rf scipy/.git
