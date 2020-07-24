@@ -22,12 +22,13 @@ jobs:
     builderApk: 'build-base;gfortran;openblas-dev;lapack-dev;openblas-dev'
     builderPip: 'Cython;numpy'
     builderPath: 'scipy'
-    builderEnvFile: true
     wheelsLocal: true
     preBuild:
     - script: |
-        version="$(head -n 1 requirements.txt)"
-        git clone --depth 1 --recurse-submodules -b "${version##*.}" https://github.com/scipy/scipy
+        set -xe
+
+        version="$(head -n 1 requirements.txt | cut -d '=' -f 3)"
+        git clone --depth 1 -b "${version}" https://github.com/scipy/scipy
 
         patch -d scipy -p 0 < missing-int64_t.patch
         rm -rf scipy/.git
