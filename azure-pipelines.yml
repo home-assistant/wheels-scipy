@@ -30,6 +30,7 @@ jobs:
         version="$(head -n 1 requirements.txt | cut -d '=' -f 3)"
         git clone --depth 1 -b "v${version}" https://github.com/scipy/scipy
 
-        patch -d scipy -p 0 < missing-int64_t.patch
-        rm -rf scipy/.git
+        cd scipy
+        git apply ../missing-int64_t.patch
+        rm -rf .git
       displayName: 'Setup scipy'
