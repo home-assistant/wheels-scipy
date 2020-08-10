@@ -23,6 +23,7 @@ jobs:
     builderPip: 'Cython;numpy'
     builderPath: 'scipy'
     wheelsLocal: true
+    auditwheel: true
     preBuild:
     - script: |
         set -xe
