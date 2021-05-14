@@ -1,0 +1,63 @@
+name: Build wheels
+
+on:
+  workflow_dispatch:
+  release:
+    types:
+      - published
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "requirements.txt"
+      - ".github/workflows/wheels.yml" # For testing only, remove before merge
+
+jobs:
+  build:
+    name: Build wheels with ${{ matrix.tag }} (${{ matrix.arch }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - amd64
+          #- i386
+          #- armhf
+          #- armv7
+          #- aarch64
+        tag:
+          - "3.8-alpine3.12"
+          #- "3.9-alpine3.13"
+    steps:
+      - name: Enable testing
+        id: testing
+        run: |
+          testing="true"
+          if [[ "${{ github.event_name  }}" =~ release|workflow_dispatch ]]; then
+            testing="false"
+          fi
+          echo "::set-output name=testing::${testing}"
+
+      - name: Prepare opencv-python
+        run: |
+          set -xe
+
+          version="$(head -n 1 requirements.txt | cut -d '=' -f 3)"
+          git clone --depth 1 -b "v${version}" https://github.com/scipy/scipy
+
+          cd scipy
+          git apply ../missing-int64_t.patch
+          rm -rf .git
+
+      - name: Build wheels
+        uses: home-assistant/wheels@master
+        with:
+          tag: ${{ matrix.tag }}
+          arch: ${{ matrix.arch }}
+          wheels-key: ${{ secrets.WHEELS_KEY }}
+          apk: "build-base;gfortran;openblas-dev;lapack-dev;openblas-dev"
+          pip: "Cython;numpy"
+          path: "scipy"
+          test: ${{ steps.testing.outputs.testing }}
+          local: true
+
