@@ -10,7 +10,6 @@ on:
       - master
     paths:
       - "requirements.txt"
-      - "*.patch"
       - ".github/workflows/wheels.yml" # For testing only, remove before merge
 
 jobs:
@@ -50,7 +49,6 @@ jobs:
           git clone --depth 1 -b "v${version}" https://github.com/scipy/scipy
 
           cd scipy
-          git apply ../missing-int64_t.patch
           rm -rf .git
 
       - name: Build wheels
